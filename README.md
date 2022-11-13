@@ -1,6 +1,8 @@
 # HAMK, IoT Ark Excercise MQTT Client with Python for Node RED + Maps
 
-This is a simple MQTT client publishing some bogus values to simulate for the excercise for IoT course on [HAMK](https://www.hamk.fi/korkeakouludiplomi/iot-data-ja-pelimoottoriosaaja/) in 2022.
+This is a simple MQTT client publishing some bogus values to simulate for the excercise for IoT course on [HAMK](https://www.hamk.fi/korkeakouludiplomi/iot-data-ja-pelimoottoriosaaja/) in 2022. See video below how it will look in Node-RED.
+
+The file for this last excercise is: ![hamk-iot_maps.py](hamk-iot_maps.py).
 
 You can see how the Arctic Circle is operating as it will publish coordinates of several entities.
 
