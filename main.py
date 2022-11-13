@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-# This is a simple MQTT client publishing some system
-# information to a broker. Uses Paho MQTT.
+# HAMK, IoT Ark Excercise MQTT Client with python for 
+# Node RED + Dashboard
+# This is a simple MQTT client publishing some bogus values
+# for temperature, humidity and atmospheric pressure.
+# Uses Paho MQTT.
 #
 # Set environment var MQTT_BROKER as broker hostname or ip
 #
 # By: Visa Hannula
 
-import logging
 import sys
 import os # for env
 import json
@@ -21,7 +23,6 @@ if not MQTT_BROKER:
     MQTT_BROKER='localhost'
     print(f'Broker hostname not defined, using {MQTT_BROKER}')
 
-logging.basicConfig(level=logging.DEBUG)
 
 def pub_to_broker(mqttc, obj, flags, rc):
     print(f'Connection! {mqttc}, {obj}, {flags}, {rc}')
@@ -50,8 +51,10 @@ def main(argv=[]):
     
     mqtt_client.connect(host=MQTT_BROKER, )
     
-    print(f'Publishing to: {MQTT_TOPIC}')
-    mqtt_client.publish(retain=False, topic=MQTT_TOPIC, payload=json.dumps(create_payload()))
+    payload = json.dumps(create_payload())
+    print(f'Publishing. Topic: "{MQTT_TOPIC}", Payload: "{payload}"')
+    
+    mqtt_client.publish(retain=False, topic=MQTT_TOPIC, payload=payload)
 
     if mqtt_client.is_connected():
         print(f'Disconnecting.')
