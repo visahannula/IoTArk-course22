@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-# This is a simple MQTT client publishing some system
-# information to a broker. Uses Paho MQTT.
+# HAMK, IoT Ark Excercise MQTT Client with python for 
+# Node RED + Dashboard
+# This is a simple MQTT client publishing some bogus values
+# for temperature, humidity and atmospheric pressure. Uses Paho MQTT.
 #
 # Set environment var MQTT_BROKER as broker hostname or ip
 #
