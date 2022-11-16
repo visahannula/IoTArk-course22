@@ -2,9 +2,9 @@
 
 This is a simple MQTT client publishing some bogus values to simulate for the excercise for IoT Ark course on [HAMK](https://www.hamk.fi/korkeakouludiplomi/iot-data-ja-pelimoottoriosaaja/) in 2022.
 
-You can see how the Arctic Circle is operating as it will publish coordinates of several entities.
+You can see how the Arctic Circle is operating as it will publish coordinates of several entities. 😀
 
-During publish sensor name is appended to the MQTT topic, which allows you to subscribe to single sensor updates (or multiple with for example "`#`").
+During publish, sensor name is appended to the MQTT topic, which allows you to subscribe to single sensor updates (or multiple with for example "`#`").
 
 Latest implementation connects each sensor as separate MQTT client (incl. own client id).
 
