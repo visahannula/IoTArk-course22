@@ -145,7 +145,7 @@ class SensorMQTTClient:
 
 # MQTT callbacks
 def pub_to_broker(mqttc, obj, flags, reasonCode):
-    print(f'Connection! {mqttc}, {obj}, {flags}, {rc}')
+    print(f'Connection! {mqttc}, {obj}, {flags}, {reasonCode}')
 
 
 def on_publish(mqttc, obj, mid):
