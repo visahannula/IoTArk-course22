@@ -90,8 +90,8 @@ class Sensor:
         self.last_update_time = datetime.now(tz=timezone.utc)
         print(f"Started sensor: {self.name}, {self.last_update_time}")
 
-    def get_name(self, short=False):
-        return self.name if not short else self.name.replace(" ", "_")
+    def get_name(self, underscores=False):
+        return self.name if not underscores else self.name.replace(" ", "_")
 
     def set_position(self, lat: float, lon: float):
         if lat > 90: # Edge of the world!
@@ -127,7 +127,7 @@ class Sensor:
     # return dict representation of obj
     def get_dict(self):
         dict_obj = {
-            "name": self.name,
+            "name": self.get_name(),
             "running": True if not self.last_update_time == None else False,
             "icon": self.icon
         }
@@ -185,7 +185,7 @@ def main(argv=[]):
         s.speed_lon = sensor["speed_lon"]
         s.icon = sensor["icon"]
     
-        mqtt_c = mqtt.Client(f"Client_Study_{s.name}") # name for mqtt
+        mqtt_c = mqtt.Client(f"Client_Study_{s.get_name(True)}") # name for mqtt
         mqtt_c.on_connect = pub_to_broker
         mqtt_c.on_publish = on_publish
         mqtt_c.on_connect_fail = on_connect_fail
