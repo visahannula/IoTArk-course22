@@ -179,11 +179,11 @@ def main(argv=[]):
 
     # initialize sensor clients and connect (could use some threading here?)
     for sensor in sensors:
-        s = Sensor(sensor["name"])
-        s.set_position(sensor["initial_lat"], sensor["initial_lon"])
-        s.speed_lat = sensor["speed_lat"]
-        s.speed_lon = sensor["speed_lon"]
-        s.icon = sensor["icon"]
+        s = Sensor(sensor.get("name"))
+        s.set_position(sensor.get("initial_lat"), sensor.get("initial_lon"))
+        s.speed_lat = sensor.get("speed_lat")
+        s.speed_lon = sensor.get("speed_lon")
+        s.icon = sensor.get("icon")
     
         mqtt_c = mqtt.Client(f"Client_Study_{s.get_name(True)}") # name for mqtt
         mqtt_c.on_connect = pub_to_broker
@@ -202,8 +202,8 @@ def main(argv=[]):
             for thing in things:
                 payload = json.dumps(create_payload(thing.sensor.get_dict()))
 
-                print(f'Publishing. Topic: "{MQTT_TOPIC}/{thing.sensor.get_name(short=True)}", Payload: "{payload}"')
-                thing.mqtt_client.publish(retain=False, topic=f'{MQTT_TOPIC}/{thing.sensor.get_name(short=True)}', payload=payload)
+                print(f'Publishing. Topic: "{MQTT_TOPIC}/{thing.sensor.get_name(True)}", Payload: "{payload}"')
+                thing.mqtt_client.publish(retain=False, topic=f'{MQTT_TOPIC}/{thing.sensor.get_name(True)}', payload=payload)
                 sleep(0.5)
     except KeyboardInterrupt:
         print("\nOK. Shutting down.")
