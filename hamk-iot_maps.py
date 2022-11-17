@@ -30,8 +30,8 @@ sensors = [
         "name": "Santa Claus",
         "initial_lat": 66.54328556230257, # Santa village
         "initial_lon": 25.845727069829188,
-        "speed_up": 1.2,
-        "speed_left": 1.5,
+        "speed_lat": 1.2,
+        "speed_lon": 1.5,
         "icon": ":santa:",
         "obj": None
     },
@@ -39,8 +39,8 @@ sensors = [
         "name": "Aeroplane 774",
         "initial_lat": 66.5547424073456, 
         "initial_lon": 25.81127964455749,
-        "speed_up": 75,
-        "speed_left": 57,
+        "speed_lat": 75,
+        "speed_lon": 57,
         "icon": ":airplane:",
         "obj": None
     },
@@ -48,8 +48,8 @@ sensors = [
         "name": "Heli Aslak",
         "initial_lat": 66.54085588672697,
         "initial_lon": 25.866901092402323,
-        "speed_up": 55,
-        "speed_left": -57,
+        "speed_lat": 55,
+        "speed_lon": -57,
         "icon": "helicopter",
         "obj": None
     },
@@ -57,8 +57,8 @@ sensors = [
         "name": "Reindeer 1.",
         "initial_lat": 66.54655132697363,
         "initial_lon": 25.84243694805249,
-        "speed_up": 2,
-        "speed_left": 4,
+        "speed_lat": 2,
+        "speed_lon": 4,
         "icon": ":deer:",
         "obj": None
     },
@@ -66,8 +66,8 @@ sensors = [
         "name": "Reindeer 2.",
         "initial_lat": 66.54749582714075, 
         "initial_lon": 25.843993522504604,
-        "speed_up": 2,
-        "speed_left": -4,
+        "speed_lat": 2,
+        "speed_lon": -4,
         "icon": ":deer:",
         "obj": None
     }
@@ -137,7 +137,7 @@ class Sensor:
 
 
 # Class to hold the sensors and mqtt clients
-class SensorMQTTClient:
+class ThingSensorMQTT:
     def __init__(self, sensor: Sensor, mqtt_client: mqtt.Client):
         self.sensor = sensor
         self.mqtt_client = mqtt_client
@@ -175,14 +175,14 @@ def create_payload(sensor_data: dict):
 
 
 def main(argv=[]):
-    sensor_clients = []
+    things = []
 
     # initialize sensor clients and connect (could use some threading here?)
     for sensor in sensors:
         s = Sensor(sensor["name"])
         s.set_position(sensor["initial_lat"], sensor["initial_lon"])
-        s.speed_lat = sensor["speed_up"]
-        s.speed_lon = sensor["speed_left"]
+        s.speed_lat = sensor["speed_lat"]
+        s.speed_lon = sensor["speed_lon"]
         s.icon = sensor["icon"]
     
         mqtt_c = mqtt.Client(f"Client_Study_{s.name}") # name for mqtt
@@ -191,7 +191,7 @@ def main(argv=[]):
         mqtt_c.on_connect_fail = on_connect_fail
         mqtt_c.on_disconnect = on_disconnect
     
-        sensor_clients.append(SensorMQTTClient(s, mqtt_c))
+        things.append(ThingSensorMQTT(s, mqtt_c))
 
         s.start()
         mqtt_c.connect(host=MQTT_BROKER)
@@ -199,19 +199,19 @@ def main(argv=[]):
     # publish sensor values to mqtt
     try:
         for reading in range(35):
-            for client in sensor_clients:
-                payload = json.dumps(create_payload(client.sensor.get_dict()))
+            for thing in things:
+                payload = json.dumps(create_payload(thing.sensor.get_dict()))
 
-                print(f'Publishing. Topic: "{MQTT_TOPIC}/{client.sensor.get_name(short=True)}", Payload: "{payload}"')
-                client.mqtt_client.publish(retain=False, topic=f'{MQTT_TOPIC}/{client.sensor.get_name(short=True)}', payload=payload)
+                print(f'Publishing. Topic: "{MQTT_TOPIC}/{thing.sensor.get_name(short=True)}", Payload: "{payload}"')
+                thing.mqtt_client.publish(retain=False, topic=f'{MQTT_TOPIC}/{thing.sensor.get_name(short=True)}', payload=payload)
                 sleep(0.5)
     except KeyboardInterrupt:
-        print("OK. Shutting down.")
+        print("\nOK. Shutting down.")
 
-    for client in sensor_clients:
-        if client.mqtt_client.is_connected():
+    for thing in things:
+        if thing.mqtt_client.is_connected():
             print(f'Disconnecting.')
-            client.mqtt_client.disconnect()
+            thing.mqtt_client.disconnect()
 
     return 0
 
